@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create(self::TABLE, function (Blueprint $table) {
             $table->id();
             $table->float('value')->default(0);
-            $table->integer('currency');
+            $table->integer('currency_value');
             $table->timestamps();
         });
     }

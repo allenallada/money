@@ -6,6 +6,7 @@ use Exception;
 use InvalidArgumentException;
 use App\Enums\Currency;
 use App\Utils\CurrencyConverter;
+use App\Models\Money as MoneyModel;
 
 class Money
 {
@@ -252,5 +253,18 @@ class Money
 
             return $money->getEuroValue() < $highest->getEuroValue() ? $money : $highest;
         });
+    }
+
+    /**
+     * save a model with the current values
+     */
+    public function saveAsModel()
+    {
+        $model = new MoneyModel([
+            'value' => $this->value,
+            'currency_value' => $this->currency->value
+        ]);
+
+        return $model->save();
     }
 }
