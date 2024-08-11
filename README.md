@@ -1,66 +1,261 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Money Class
 
-## About Laravel
+This README provides an overview and usage examples for the `Money` class.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Constructor
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### `__construct(float $value, Currency $currency = Currency::EUR)`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Creates a new `Money` object.
 
-## Learning Laravel
+**Parameters:**
+- `$value` (float): The monetary value.
+- `$currency` (Currency): The currency of the value. Defaults to EUR.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Example:**
+```php
+$money = new Money(100, Currency::EUR);
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Public Methods
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### `getDetails(): array`
 
-## Laravel Sponsors
+Returns the details of the money object, including amount and currency.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Example:**
+```php
+$details = $money->getDetails();
+// ['amount' => 100.0, 'currency' => Currency::EUR]
+```
 
-### Premium Partners
+### `getValue(): float`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Returns the current value, considering any applied discount.
 
-## Contributing
+**Example:**
+```php
+$money = new Money(100, Currency::EUR);
+$value = $money->getValue();
+// 100.0
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+$money = new Money(100, Currency::EUR);
+$money->setDiscount(10);
+$value = $money->getValue();
+// 90.0
+```
 
-## Code of Conduct
+### `getOriginalValue(): float`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Returns the original value without any discount.
 
-## Security Vulnerabilities
+**Example:**
+```php
+$originalValue = $money->getOriginalValue();
+// 100.0
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### `getCurrency(): Currency`
 
-## License
+Returns the currency of the money.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Example:**
+```php
+$currency = $money->getCurrency();
+```
+
+### `getCurrencySymbol(): ?string`
+
+Returns the symbol of the currency.
+
+**Example:**
+```php
+$symbol = $money->getCurrencySymbol();
+// '€'
+```
+
+### `getDiscount(): int`
+
+Returns the discount percentage.
+
+**Example:**
+```php
+$money = new Money(100, Currency::EUR);
+$money->setDiscount(10);
+$discount = $money->getDiscount();
+// 10
+```
+
+### `getDiscountValue(): float`
+
+Returns the computed discount value.
+
+**Example:**
+```php
+$money = new Money(100, Currency::EUR);
+$money->setDiscount(25);
+$discountValue = $money->getDiscountValue();
+// 25.0
+```
+
+### `getFormatted(): string`
+
+Returns the formatted value with the currency symbol.
+
+**Example:**
+```php
+$formatted = $money->getFormatted();
+// Example output: "$ 100.00"
+```
+
+### `add(Money $money): Money`
+
+Adds the value of another `Money` object and returns a new `Money` object.
+
+**Example:**
+```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
+$newMoney = $money1->add($money2);
+// $newMoney has a value of 150 EUR
+```
+
+### `subtract(Money $money): Money`
+
+Subtracts the value of another `Money` object and returns a new `Money` object.
+
+**Example:**
+```php
+$newMoney = $money1->subtract($money2);
+// $newMoney has a value of 50 EUR
+```
+
+### `multiply(Money $money): Money`
+
+Multiplies the value by the value of another `Money` object and returns a new `Money` object.
+
+**Example:**
+```php
+$newMoney = $money1->multiply($money2);
+// $newMoney has a value of 5000 EUR (100 * 50)
+```
+
+### `divide(Money $money): Money`
+
+Divides the value by the value of another `Money` object and returns a new `Money` object.
+
+**Example:**
+```php
+$newMoney = $money1->divide($money2);
+// $newMoney has a value of 2 EUR (100 / 50)
+```
+
+### `setDiscount(int $discount): Money`
+
+Sets the discount percentage.
+
+**Example:**
+```php
+$money->setDiscount(10);
+// 10% discount applied
+```
+
+### `convert(Currency $currency): Money`
+
+Converts the money to a different currency and returns a new `Money` object.
+
+**Example:**
+```php
+$moneyInEur = $money->convert(Currency::EUR);
+```
+
+### `getEuroValue(): float`
+
+Gets the value in EUR.
+
+**Example:**
+```php
+$euroValue = $money->getEuroValue();
+```
+
+### `getValueIn(Currency $currency): float`
+
+Gets the value in another currency.
+
+**Example:**
+```php
+$valueInEUR = $money->getValueIn(Currency::EUR);
+```
+
+### `getTotal(array $moneys, Currency $currency = Currency::EUR): float`
+
+Gets the total value of an array of `Money` objects in a specified currency.
+
+**Example:**
+```php
+$total = Money::getTotal([$money1, $money2], Currency::EUR);
+```
+
+### `getAverage(array $moneys, Currency $currency = Currency::EUR): float`
+
+Gets the average value of an array of `Money` objects in a specified currency.
+
+**Example:**
+```php
+$average = Money::getAverage([$money1, $money2], Currency::EUR);
+```
+
+### `getHighest(array $moneys): Money`
+
+Gets the highest value among an array of `Money` objects.
+
+**Example:**
+```php
+$highest = Money::getHighest([$money1, $money2]);
+```
+
+### `getLowest(array $moneys): Money`
+
+Gets the lowest value among an array of `Money` objects.
+
+**Example:**
+```php
+$lowest = Money::getLowest([$money1, $money2]);
+```
+
+### `createModel(): MoneyModel`
+
+Creates and returns a `MoneyModel` based on the current values.
+
+**Example:**
+```php
+$model = $money->createModel();
+```
+
+### `getModel(): MoneyModel`
+
+Returns the associated `MoneyModel`.
+
+**Example:**
+```php
+$model = $money->getModel();
+```
+
+### `saveAsModel(): bool`
+
+Saves the current values as a model.
+
+**Example:**
+```php
+$success = $money->saveAsModel();
+```
+
+### `bind(MoneyModel $model): Money`
+
+Binds an existing `MoneyModel` to the `Money` object.
+
+**Example:**
+```php
+$money->bind($model);
+```
