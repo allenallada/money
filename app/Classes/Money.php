@@ -10,6 +10,8 @@ class Money
 
     private Currency $currency;
 
+    private int $discount = 0; //default value is zero
+
     /**
      * Constructor, EUR as default
      */
@@ -33,7 +35,19 @@ class Money
     /**
      * value
      */
-    public function getValue()
+    public function getValue(): float
+    {
+        if ($this->discount == 0) {
+            return $this->value;
+        }
+
+        return $this->value - $this->getDiscountValue();
+    }
+
+    /**
+     * original value
+     */
+    public function getOriginalValue(): float
     {
         return $this->value;
     }
@@ -41,9 +55,25 @@ class Money
     /**
      * symbol
      */
-    public function getCurrencySymbol()
+    public function getCurrencySymbol(): ?string
     {
         return $this->currency->symbol();
+    }
+
+    /**
+     * discount
+     */
+    public function getDiscount(): int
+    {
+        return $this->discount;
+    }
+
+    /**
+     * the computed discount value
+     */
+    public function getDiscountValue(): float
+    {
+        return ($this->discount / 100) * $this->value;;
     }
 
     /**
@@ -97,5 +127,14 @@ class Money
         }
         $value = $this->value / $money->getValue();
         return new Money($value, $this->currency);
+    }
+
+    public function setDiscount(int $discount): Money
+    {
+        if ($discount > 100 || $discount < 0) {
+            throw new \InvalidArgumentException("Discount must be from 0 to 100");
+        }
+        $this->discount = $discount;
+        return $this;
     }
 }
