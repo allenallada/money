@@ -2,8 +2,8 @@
 
 namespace App\Utils;
 
-use App\Enums\Currency;
 use Exception;
+use App\Enums\Currency;
 
 class CurrencyConverter
 {

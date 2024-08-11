@@ -2,6 +2,8 @@
 
 namespace App\Classes;
 
+use Exception;
+use InvalidArgumentException;
 use App\Enums\Currency;
 use App\Utils\CurrencyConverter;
 
@@ -46,7 +48,7 @@ class Money
     }
 
     /**
-     * original value
+     * original value without the discount
      */
     public function getOriginalValue(): float
     {
@@ -101,6 +103,8 @@ class Money
      */
     public function add(Money $money): Money
     {
+        $this->validateOperation($money);
+
         $value = $this->value + $money->getValue();
         return new Money($value, $this->currency);
     }
@@ -111,6 +115,8 @@ class Money
      */
     public function subtract(Money $money): Money
     {
+        $this->validateOperation($money);
+
         $value = $this->value - $money->getValue();
         return new Money($value, $this->currency);
     }
@@ -121,6 +127,8 @@ class Money
      */
     public function multiply(Money $money): Money
     {
+        $this->validateOperation($money);
+
         $value = $this->value * $money->getValue();
         return new Money($value, $this->currency);
     }
@@ -131,17 +139,23 @@ class Money
      */
     public function divide(Money $money): Money
     {
+        $this->validateOperation($money);
+
         if ($money->getValue() === 0) {
-            throw new \InvalidArgumentException("Cannot divide by zero.");
+            throw new InvalidArgumentException("Cannot divide by zero.");
         }
+
         $value = $this->value / $money->getValue();
         return new Money($value, $this->currency);
     }
 
+    /**
+     * set the discount percentage
+     */
     public function setDiscount(int $discount): Money
     {
         if ($discount > 100 || $discount < 0) {
-            throw new \InvalidArgumentException("Discount must be from 0 to 100");
+            throw new InvalidArgumentException("Discount must be from 0 to 100");
         }
         $this->discount = $discount;
         return $this;
@@ -155,5 +169,25 @@ class Money
     {
         $value = CurrencyConverter::convert($this->value, $this->currency, $currency);
         return new Money($value, $currency);
+    }
+
+    /**
+     * validation for operations
+     * throws an exception
+     */
+    private function validateOperation(Money $operand): void
+    {
+        $this->validateSameCurrency($operand);
+        // we can add more validations here
+    }
+
+    /**
+     * validation for same currency
+     */
+    private function validateSameCurrency(Money $operand): void
+    {
+        if ($this->currency != $operand->getCurrency()) {
+            throw new Exception("Mismatch currency");
+        }
     }
 }
