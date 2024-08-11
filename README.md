@@ -3,6 +3,15 @@
 
 This README provides an overview and usage examples for the `Money` class.
 
+# Usage/Import
+
+```php
+use App\Classes\Money;
+
+$money = new Money(100, Currency::EUR);
+$money->getValue();
+```
+
 ## Constructor
 
 ### `__construct(float $value, Currency $currency = Currency::EUR)`
