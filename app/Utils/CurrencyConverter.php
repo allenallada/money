@@ -67,7 +67,7 @@ class CurrencyConverter
             return $value;
         }
 
-        return $value / self::getConversionRate($currency);
+        return $value * self::getConversionRate($currency);
     }
 
     /**
@@ -79,7 +79,7 @@ class CurrencyConverter
             return $value;
         }
 
-        return $value * self::getConversionRate($currency);
+        return $value / self::getConversionRate($currency);
     }
 
     /**

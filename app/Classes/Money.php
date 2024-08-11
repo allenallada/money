@@ -173,6 +173,14 @@ class Money
     }
 
     /**
+     * get the value in other Currencies
+     */
+    public function getValueIn(Currency $currency): float
+    {
+        return CurrencyConverter::convert($this->value, $this->currency, $currency);
+    }
+
+    /**
      * get total value in desired currency
      */
     public static function getTotal(array $moneys, Currency $currency = Currency::EUR): float
