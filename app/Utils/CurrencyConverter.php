@@ -13,7 +13,7 @@ class CurrencyConverter
     public static function getConversionRates()
     {
         //left this as is to honor the resources provided
-        //created as function if ever the conversion is from an API call
+        //created as a function if ever the conversion is from an API call
         return [
             4   => 1.08610000,
             11  => 1.45520000,
