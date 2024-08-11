@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Enums\Currency;
+use App\Utils\CurrencyConverter;
 
 class Money
 {
@@ -50,6 +51,14 @@ class Money
     public function getOriginalValue(): float
     {
         return $this->value;
+    }
+
+    /**
+     * currency
+     */
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
     }
 
     /**
@@ -136,5 +145,15 @@ class Money
         }
         $this->discount = $discount;
         return $this;
+    }
+
+    /**
+     * convert the money to different currency
+     * returns a new Money Class
+     */
+    public function convert(Currency $currency): Money
+    {
+        $value = CurrencyConverter::convert($this->value, $this->currency, $currency);
+        return new Money($value, $currency);
     }
 }
