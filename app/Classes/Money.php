@@ -2,7 +2,6 @@
 
 namespace App\Classes;
 
-use Exception;
 use InvalidArgumentException;
 use App\Enums\Currency;
 use App\Utils\CurrencyConverter;

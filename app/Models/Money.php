@@ -8,6 +8,9 @@ use App\Classes\Money as MoneyClass;
 
 class Money extends Model
 {
+    /**
+     * fillable columns
+     */
     protected $fillable = [
         'value',
         'currency_value'
