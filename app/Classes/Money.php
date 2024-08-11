@@ -16,6 +16,8 @@ class Money
 
     private int $discount = 0; //default value is zero
 
+    private MoneyModel $model; //unnassiged
+
     /**
      * Constructor, EUR as default
      */
@@ -236,15 +238,46 @@ class Money
     }
 
     /**
-     * save a model with the current values
+     * create a model 
      */
-    public function saveAsModel()
+    public function createModel(): MoneyModel
     {
         $model = new MoneyModel([
             'value' => $this->value,
             'currency_value' => $this->currency->value
         ]);
 
+        $this->model = $model;
+        return $model;
+    }
+
+    /**
+     * create a model 
+     */
+    public function getModel(): MoneyModel
+    {
+        if (isset($this->model)) {
+            $this->createModel();
+        }
+
+        return $this->model;
+    }
+
+    /**
+     * save a model with the current values
+     */
+    public function saveAsModel(): bool
+    {
+        $model = $this->createModel();
         return $model->save();
+    }
+
+    /**
+     * bind model
+     */
+    public function bind(MoneyModel $model): Money
+    {
+        $this->model = $model();
+        return $this;
     }
 }

@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use App\Enums\Currency;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Classes\Money as MoneyClass;
 
 class Money extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'value',
         'currency_value'
@@ -29,6 +26,8 @@ class Money extends Model
      */
     public function createClass()
     {
-        return new MoneyClass($this->value, $this->currency);
+        $class = new MoneyClass($this->value, $this->currency);
+        $class->bind($this);
+        return $class;
     }
 }
