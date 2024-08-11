@@ -190,4 +190,67 @@ class Money
             throw new Exception("Mismatch currency");
         }
     }
+
+    /**
+     * get the euro value
+     */
+    public function getEuroValue()
+    {
+        return CurrencyConverter::getEuroValue($this->value, $this->currency);
+    }
+
+    /**
+     * get total value in desired currency
+     */
+    public static function getTotal(array $moneys, Currency $currency = Currency::EUR): float
+    {
+        $totalValue = array_reduce($moneys, function (float $total, Money $money) {
+            //convert the value to euro first to align real values
+            return $total + $money->getEuroValue();
+        }, 0);
+
+        return CurrencyConverter::convertFromEuro($totalValue, $currency);
+    }
+
+    /**
+     * get the average of values of Money object array
+     */
+    public static function getAverage(array $moneys, Currency $currency = Currency::EUR): float
+    {
+        $total = self::getTotal($moneys, $currency);
+
+        $average = $total / count($moneys);
+
+        return $average;
+    }
+
+    /**
+     * get the highest of the money array
+     */
+    public static function getHighest(array $moneys): Money
+    {
+        return array_reduce($moneys, function (?Money $highest, Money $money) {
+            if ($highest === null) {
+                //first value
+                return $money;
+            }
+
+            return $money->getEuroValue() > $highest->getEuroValue() ? $money : $highest;
+        });
+    }
+
+    /**
+     * get the lowest of the money array
+     */
+    public static function getLowest(array $moneys): Money
+    {
+        return array_reduce($moneys, function (?Money $highest, Money $money) {
+            if ($highest === null) {
+                //first value
+                return $money;
+            }
+
+            return $money->getEuroValue() < $highest->getEuroValue() ? $money : $highest;
+        });
+    }
 }
