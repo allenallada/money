@@ -136,6 +136,8 @@ Subtracts the value of another `Money` object and returns a new `Money` object.
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $newMoney = $money1->subtract($money2);
 // $newMoney has a value of 50 EUR
 ```
@@ -146,6 +148,8 @@ Multiplies the value by the value of another `Money` object and returns a new `M
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $newMoney = $money1->multiply($money2);
 // $newMoney has a value of 5000 EUR (100 * 50)
 ```
@@ -156,6 +160,8 @@ Divides the value by the value of another `Money` object and returns a new `Mone
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $newMoney = $money1->divide($money2);
 // $newMoney has a value of 2 EUR (100 / 50)
 ```
@@ -166,17 +172,20 @@ Sets the discount percentage.
 
 **Example:**
 ```php
+$money = new Money(100, Currency::EUR);
 $money->setDiscount(10);
 // 10% discount applied
 ```
 
 ### `convert(Currency $currency): Money`
 
-Converts the money to a different currency and returns a new `Money` object.
+Converts the money to a different currency and returns a new `Money` object. Only currencies values are supported and exception will be thrown if conversion is not supported.
 
 **Example:**
 ```php
-$moneyInEur = $money->convert(Currency::EUR);
+$money = new Money(100, Currency::EUR);
+$money->convert(Currency::AMD);
+// returns a Money Object with converted value
 ```
 
 ### `getEuroValue(): float`
@@ -185,52 +194,68 @@ Gets the value in EUR.
 
 **Example:**
 ```php
+$money = new Money(100, Currency::EUR);
 $euroValue = $money->getEuroValue();
+// 100.0
 ```
 
 ### `getValueIn(Currency $currency): float`
 
-Gets the value in another currency.
+Gets the value in another currency. Only some currencies are supported and exception will be thrown if conversion is not supported.
 
 **Example:**
 ```php
-$valueInEUR = $money->getValueIn(Currency::EUR);
+$money = new Money(100, Currency::EUR);
+$money->getValueIn(Currency::AMD);
+// 9.207255317
 ```
 
 ### `getTotal(array $moneys, Currency $currency = Currency::EUR): float`
 
-Gets the total value of an array of `Money` objects in a specified currency.
+Gets the total value of an array of `Money` objects in a specified currency. Converts the values to the `$currency` argument first before execution.
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $total = Money::getTotal([$money1, $money2], Currency::EUR);
+// 150.0
 ```
 
 ### `getAverage(array $moneys, Currency $currency = Currency::EUR): float`
 
-Gets the average value of an array of `Money` objects in a specified currency.
+Gets the average value of an array of `Money` objects in a specified currency. Converts the values to the `$currency` argument first before execution.
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $average = Money::getAverage([$money1, $money2], Currency::EUR);
+// 75.0
 ```
 
 ### `getHighest(array $moneys): Money`
 
-Gets the highest value among an array of `Money` objects.
+Gets the highest value among an array of `Money` objects. Converts the values first to EUR before comparing
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $highest = Money::getHighest([$money1, $money2]);
+// returns $money1
 ```
 
-### `getLowest(array $moneys): Money`
+### `getLowest(array $moneys): Money` 
 
-Gets the lowest value among an array of `Money` objects.
+Gets the lowest value among an array of `Money` objects. Converts the values first to EUR before comparing
 
 **Example:**
 ```php
+$money1 = new Money(100, Currency::EUR);
+$money2 = new Money(50, Currency::EUR);
 $lowest = Money::getLowest([$money1, $money2]);
+// returns $money2
 ```
 
 ### `createModel(): MoneyModel`
@@ -240,15 +265,17 @@ Creates and returns a `MoneyModel` based on the current values.
 **Example:**
 ```php
 $model = $money->createModel();
+//returns App\Models\Money Model
 ```
 
 ### `getModel(): MoneyModel`
 
-Returns the associated `MoneyModel`.
+Returns the associated `MoneyModel`. If the model is not yet set, this will create a new model first.
 
 **Example:**
 ```php
 $model = $money->getModel();
+//returns App\Models\Money Model
 ```
 
 ### `saveAsModel(): bool`
@@ -258,11 +285,12 @@ Saves the current values as a model.
 **Example:**
 ```php
 $success = $money->saveAsModel();
+// true/false
 ```
 
 ### `bind(MoneyModel $model): Money`
 
-Binds an existing `MoneyModel` to the `Money` object.
+Binds an existing `App\Models\Money` to the `Money` object.
 
 **Example:**
 ```php
