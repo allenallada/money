@@ -296,3 +296,15 @@ Binds an existing `App\Models\Money` to the `Money` object.
 ```php
 $money->bind($model);
 ```
+
+## Table: `money`
+
+The `money` table consists of the following columns:
+
+| Column Name     | Data Type     | Description                                            |
+|-----------------|---------------|--------------------------------------------------------|
+| `id`            | `bigInteger`  | Auto-incrementing primary key                          |
+| `value`         | `float`       | The monetary value, defaults to `0`                    |
+| `currency_value`| `integer`     | The currency value from Currency Enum                  |
+| `created_at`    | `timestamp`   | Timestamp for when the record was created              |
+| `updated_at`    | `timestamp`   | Timestamp for when the record was last updated         |
